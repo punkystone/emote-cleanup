@@ -28,7 +28,7 @@ func Render(emotesCount map[string]*Emote, renderFile string) error {
 	htmlBuilder.WriteString(tableHeader)
 	for _, emote := range sortedEmotes {
 		htmlBuilder.WriteString(fmt.Sprintf(`<tr>
-		<td><div><img src='https://cdn.7tv.app/emote/%s/2x.avif' loading="lazy"></div></td>
+		<td><div><img src='https://cdn.7tv.app/emote/%s/1x.avif' loading="lazy"></div></td>
 		<td><div>%s</td>
 		<td>%d</td>
 		<td>%d Tagen</td>
