@@ -26,6 +26,7 @@ func main() {
 			Count:    0,
 			LastUsed: nil,
 			Added:    emote.Added,
+			Score:    0.0,
 		}
 	}
 	dataDirectory := os.Getenv("DATA_DIRECTORY")
@@ -39,6 +40,7 @@ func main() {
 			log.Fatal().Msg(err.Error())
 		}
 	}
+	internal.CalculateScores(emotesCount)
 	renderFile := os.Getenv("RENDERFILE")
 	err = internal.Render(emotesCount, renderFile)
 	if err != nil {

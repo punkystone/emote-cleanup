@@ -14,6 +14,7 @@ type Emote struct {
 	Count    int
 	LastUsed *time.Time
 	Added    time.Time
+	Score    float64
 }
 type SevenTVEmote struct {
 	ID    string

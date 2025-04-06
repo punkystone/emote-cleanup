@@ -14,6 +14,7 @@ type SortedEmote struct {
 	Count    int
 	Added    time.Time
 	LastUsed *time.Time
+	Score    float64
 }
 
 const hoursInDay = 24
@@ -73,10 +74,11 @@ func sortEmotes(emotes map[string]*Emote) []SortedEmote {
 			Count:    emote.Count,
 			Added:    emote.Added,
 			LastUsed: emote.LastUsed,
+			Score:    emote.Score,
 		})
 	}
 	sort.Slice(sortedEmotes, func(i, j int) bool {
-		return sortedEmotes[i].Count > sortedEmotes[j].Count
+		return sortedEmotes[i].Score > sortedEmotes[j].Score
 	})
 	return sortedEmotes
 }
