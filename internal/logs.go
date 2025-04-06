@@ -77,6 +77,7 @@ func clearDirectory(path string) error {
 }
 
 func ScanLogFile(dataDirectory string, fileName string, emotesCount map[string]*Emote) error {
+	log.Info().Msgf("Scanning %s", fileName)
 	file, err := os.Open(dataDirectory + "/" + fileName)
 	if err != nil {
 		return fmt.Errorf("error opening log file: %w", err)
