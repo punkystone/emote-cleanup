@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"go_test/internal"
 	"os"
 
@@ -39,5 +38,6 @@ func main() {
 			log.Fatal().Msg(err.Error())
 		}
 	}
-	fmt.Printf("Emote counts: %+v\n", emotesCount["catAsk"])
+	renderFile := os.Getenv("RENDERFILE")
+	internal.Render(emotesCount, renderFile)
 }
