@@ -7,9 +7,15 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"regexp"
+	"strings"
 
 	"time"
+
+	"github.com/rs/zerolog/log"
 )
+
+var messagePattern = regexp.MustCompile(`^\[(\d{4}-\d{2}-\d{2}).+?\] #.+?: (.*)$`)
 
 func DownloadLogs(logInstance string, startDate string, dataDirectory string, channel string) error {
 	date, err := time.Parse("2006-01-02", startDate)
@@ -74,6 +80,41 @@ func clearDirectory(path string) error {
 	}
 	for _, file := range files {
 		os.Remove(filepath.Join(path, file.Name()))
+	}
+	return nil
+}
+
+func ScanLogFile(dataDirectory string, fileName string, emotesCount map[string]*Emote) error {
+	file, err := os.Open(dataDirectory + "/" + fileName)
+	if err != nil {
+		return fmt.Errorf("error opening log file: %w", err)
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+		matches := messagePattern.FindStringSubmatch(line)
+		const requiredGroups = 3
+		if len(matches) != requiredGroups {
+			continue
+		}
+		message := matches[2]
+		date, err := time.Parse("2006-01-02", matches[1])
+		if err != nil {
+			log.Error().Msgf("Error parsing date: %v", err)
+			continue
+		}
+		for _, word := range strings.Split(message, " ") {
+			if emote, ok := emotesCount[word]; ok {
+				emote.Count++
+				emote.LastUsed = &date
+			}
+		}
+	}
+
+	if err := scanner.Err(); err != nil {
+		return fmt.Errorf("error reading log: %w", err)
 	}
 	return nil
 }
