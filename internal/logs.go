@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -33,6 +34,7 @@ func DownloadLogs(logInstance string, startDate string, dataDirectory string, ch
 	}
 	now := time.Now()
 	for date.Before(now) || date.Equal(now) {
+		log.Info().Msgf("Downloading logs for %s", date.Format("2006-01-02"))
 		if err := downloadLog(logInstance, channel, date, dataDirectory); err != nil {
 			return fmt.Errorf("error downloading log for date %s: %w", date.Format("2006-01-02"), err)
 		}
@@ -49,7 +51,6 @@ func downloadLog(logInstance string, channel string, date time.Time, dataDirecto
 		return fmt.Errorf("error opening log file: %w", err)
 	}
 	defer file.Close()
-	writer := bufio.NewWriter(file)
 
 	//nolint:gosec //allow
 	response, err := http.Get(url)
@@ -57,18 +58,9 @@ func downloadLog(logInstance string, channel string, date time.Time, dataDirecto
 		return fmt.Errorf("error downloading log: %w", err)
 	}
 	defer response.Body.Close()
-	reader := bufio.NewScanner(response.Body)
-	for reader.Scan() {
-		_, err := writer.WriteString(reader.Text() + "\n")
-		if err != nil {
-			return fmt.Errorf("error writing to log file: %w", err)
-		}
-	}
-	if err := writer.Flush(); err != nil {
-		return fmt.Errorf("error flushing writer: %w", err)
-	}
-	if err := reader.Err(); err != nil {
-		return fmt.Errorf("error reading log: %w", err)
+	_, err = io.Copy(file, response.Body)
+	if err != nil {
+		return fmt.Errorf("error writing to log file: %w", err)
 	}
 	return nil
 }
