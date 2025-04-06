@@ -10,11 +10,13 @@ import (
 )
 
 type Emote struct {
+	ID       string
 	Count    int
 	LastUsed *time.Time
 	Added    time.Time
 }
 type SevenTVEmote struct {
+	ID    string
 	Name  string
 	Added time.Time
 }
@@ -36,6 +38,7 @@ type SevenTVResponse struct {
 			EmoteSets []struct {
 				ID     string `json:"id"`
 				Emotes []struct {
+					ID        string `json:"id"`
 					Name      string `json:"name"`
 					Timestamp string `json:"timestamp"`
 				} `json:"emotes"`
@@ -46,7 +49,7 @@ type SevenTVResponse struct {
 
 func GetEmotes(userID string) ([]SevenTVEmote, error) {
 	seventTVRequest := SevenTVRequest{
-		Query: "query($id: String!) { userByConnection(platform: TWITCH, id: $id) { connections { emote_set_id platform } emote_sets { id emotes { name timestamp } } } }",
+		Query: "query($id: String!) { userByConnection(platform: TWITCH, id: $id) { connections { emote_set_id platform } emote_sets { id emotes { id name timestamp } } } }",
 		Variables: struct {
 			ID string `json:"id"`
 		}{
@@ -93,6 +96,7 @@ func GetEmotes(userID string) ([]SevenTVEmote, error) {
 				emotes = append(emotes, SevenTVEmote{
 					Name:  emote.Name,
 					Added: added,
+					ID:    emote.ID,
 				})
 			}
 			break

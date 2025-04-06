@@ -9,6 +9,7 @@ import (
 )
 
 type SortedEmote struct {
+	ID       string
 	Name     string
 	Count    int
 	Added    time.Time
@@ -23,7 +24,15 @@ func Render(emotesCount map[string]*Emote, renderFile string) error {
 	htmlBuilder := strings.Builder{}
 	htmlBuilder.WriteString(htmlHeader)
 	for _, emote := range sortedEmotes {
-		htmlBuilder.WriteString(fmt.Sprintf("<tr><td>%s</td><td>%d</td><td>%d Tagen</td><td>%s</td></tr>", emote.Name, emote.Count, int(time.Since(emote.Added).Hours()/hoursInDay), formatLastUsed(emote.LastUsed)))
+		htmlBuilder.WriteString(fmt.Sprintf(`<tr>
+		<td><div><img src='https://cdn.7tv.app/emote/%s/2x.avif'></div></td>
+		<td><div>%s</td>
+		<td>%d</td>
+		<td>%d Tagen</td>
+		<td>%s</td>
+		<td><div><a href='https://7tv.app/emotes/%s'>%s</div></a></td>
+		</tr>`,
+			emote.ID, emote.Name, emote.Count, int(time.Since(emote.Added).Hours()/hoursInDay), formatLastUsed(emote.LastUsed), emote.ID, openIcon))
 	}
 	htmlBuilder.WriteString(htmlFooter)
 	html := htmlBuilder.String()
@@ -59,6 +68,7 @@ func sortEmotes(emotes map[string]*Emote) []SortedEmote {
 	sortedEmotes := make([]SortedEmote, 0, len(emotes))
 	for emoteName, emote := range emotes {
 		sortedEmotes = append(sortedEmotes, SortedEmote{
+			ID:       emote.ID,
 			Name:     emoteName,
 			Count:    emote.Count,
 			Added:    emote.Added,
@@ -90,20 +100,35 @@ const htmlHeader = `
         }
     table {
         border-collapse: collapse;
-        min-width: 50%;
         box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-        }
-       table th, td {
+		table-layout: auto !important;
+    }
+    table th, td {
         border: 1px solid black;
         padding: 10px;
     }
+	img {
+		height: 30px;
+	}
+	td:nth-child(1) > div {
+	 	display: flex;
+	 	align-items: center;
+		justify-content: center;
+	}
+	td:nth-child(2) > div {
+		display: flex;
+        align-items: center;
+	}
+	td:nth-child(2) > div > a {
+		padding-left: 10px;
+	}
 
     
     tr:nth-of-type(even) {
         background-color: #c6c6c6;
     }
 
-    td:nth-child(2), td:nth-child(3) {
+	 td:nth-child(3) {
         text-align: center;
     }
     
@@ -113,7 +138,8 @@ const htmlHeader = `
     <div class="main">
     <table>
     <tr>
-    <th>Emote</th>
+	<th>Emote</th>
+    <th>Name</th>
     <th>Count</th>
     <th>Hinzugefügt vor</th>
     <th>Zuletzt benutzt</th>
@@ -126,3 +152,4 @@ const htmlFooter = `
     </body>
     </html>
 `
+const openIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="#000" d="M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2v-7h-2zM14 3v2h3.59l-9.83 9.83l1.41 1.41L19 6.41V10h2V3z"/></svg>`

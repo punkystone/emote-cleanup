@@ -22,6 +22,7 @@ func main() {
 	}
 	for _, emote := range emotes {
 		emotesCount[emote.Name] = &internal.Emote{
+			ID:       emote.ID,
 			Count:    0,
 			LastUsed: nil,
 			Added:    emote.Added,
