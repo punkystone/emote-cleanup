@@ -1,0 +1,2 @@
+LOG_INSTANCE="logs.ivr.fi"
+STARTDATE="2025-01-01"
