@@ -1,6 +1,7 @@
 package main
 
 import (
+	"go_test/internal"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -12,6 +13,12 @@ func main() {
 	if err != nil {
 		log.Fatal().Msg("Error loading .env file")
 	}
-	log.Info().Msg(os.Getenv("LOG_INSTANCE"))
-	log.Info().Msg(os.Getenv("STARTDATE"))
+	logInstance := os.Getenv("LOG_INSTANCE")
+	startDate := os.Getenv("STARTDATE")
+	dataDirectory := os.Getenv("DATA_DIRECTORY")
+	channel := os.Getenv("CHANNEL")
+	err = internal.DownloadLogs(logInstance, startDate, dataDirectory, channel)
+	if err != nil {
+		log.Fatal().Msg(err.Error())
+	}
 }
