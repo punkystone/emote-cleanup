@@ -24,6 +24,8 @@ func Render(emotesCount map[string]*Emote, renderFile string) error {
 
 	htmlBuilder := strings.Builder{}
 	htmlBuilder.WriteString(htmlHeader)
+	htmlBuilder.WriteString(fmt.Sprintf("<h4>%s</h4>", time.Now().Format("02.01.2006")))
+	htmlBuilder.WriteString(tableHeader)
 	for _, emote := range sortedEmotes {
 		htmlBuilder.WriteString(fmt.Sprintf(`<tr>
 		<td><div><img src='https://cdn.7tv.app/emote/%s/2x.avif' loading="lazy"></div></td>
@@ -101,7 +103,14 @@ const htmlHeader = `
         justify-content: center;
         align-items: center;
         padding: 30px;
-        }
+		flex-direction: column;
+	}
+	.main > h2 {
+		margin-bottom: 20px;
+	}
+	.main > h4 {
+		margin-bottom: 20px;
+	}
     table {
         border-collapse: collapse;
         box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
@@ -140,7 +149,10 @@ const htmlHeader = `
     </head>
     <body>
     <div class="main">
-    <table>
+	<h2>Emote Scoreboard</h2>
+`
+const tableHeader = `
+	<table>
     <tr>
 	<th>Emote</th>
     <th>Name</th>

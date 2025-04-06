@@ -5,8 +5,8 @@ import (
 	"time"
 )
 
-const countWeight = 0.5
-const lastUsedWeight = 0.5
+const countWeight = 0.3
+const lastUsedWeight = 0.7
 
 func getMaxCount(emotes map[string]*Emote) int {
 	m := 0
