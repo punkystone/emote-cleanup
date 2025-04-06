@@ -39,5 +39,8 @@ func main() {
 		}
 	}
 	renderFile := os.Getenv("RENDERFILE")
-	internal.Render(emotesCount, renderFile)
+	err = internal.Render(emotesCount, renderFile)
+	if err != nil {
+		log.Fatal().Msg(err.Error())
+	}
 }
