@@ -31,12 +31,14 @@ func Render(emotesCount map[string]*Emote, renderFile string) error {
 		<td>%d</td>
 		<td>%d Tagen</td>
 		<td>%s</td>
+		<td>%f</td>
 		<td><div><a href='https://7tv.app/emotes/%s'>%s</div></a></td>
 		</tr>`,
-			emote.ID, emote.Name, emote.Count, int(time.Since(emote.Added).Hours()/hoursInDay), formatLastUsed(emote.LastUsed), emote.ID, openIcon))
+			emote.ID, emote.Name, emote.Count, int(time.Since(emote.Added).Hours()/hoursInDay), formatLastUsed(emote.LastUsed), emote.Score, emote.ID, openIcon))
 	}
 	htmlBuilder.WriteString(htmlFooter)
 	html := htmlBuilder.String()
+	html = strings.ReplaceAll(html, "\n", "")
 	err := writeFile(renderFile, html)
 	if err != nil {
 		return err
@@ -145,6 +147,7 @@ const htmlHeader = `
     <th>Count</th>
     <th>Hinzugefügt vor</th>
     <th>Zuletzt benutzt</th>
+	<th>Score</th>
     </tr>
 `
 
