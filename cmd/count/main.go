@@ -3,6 +3,7 @@ package main
 import (
 	"go_test/internal"
 	"os"
+	"time"
 
 	"github.com/rs/zerolog/log"
 
@@ -23,8 +24,7 @@ func main() {
 	for _, emote := range emotes {
 		emotesCount[emote.Name] = &internal.Emote{
 			ID:       emote.ID,
-			Count:    0,
-			LastUsed: nil,
+			LastUsed: []*time.Time{},
 			Added:    emote.Added,
 			Score:    0.0,
 		}

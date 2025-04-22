@@ -72,12 +72,28 @@ func writeFile(filename string, content string) error {
 func sortEmotes(emotes map[string]*Emote) []SortedEmote {
 	sortedEmotes := make([]SortedEmote, 0, len(emotes))
 	for emoteName, emote := range emotes {
+		if len(emote.LastUsed) == 0 {
+			sortedEmotes = append(sortedEmotes, SortedEmote{
+				ID:       emote.ID,
+				Name:     emoteName,
+				Added:    emote.Added,
+				Count:    0,
+				LastUsed: nil,
+				Score:    emote.Score,
+			})
+			continue
+		}
+
+		sort.Slice(emote.LastUsed, func(i, j int) bool {
+			return emote.LastUsed[i].Before(*emote.LastUsed[j])
+		})
+		lastUsed := emote.LastUsed[len(emote.LastUsed)-1]
 		sortedEmotes = append(sortedEmotes, SortedEmote{
 			ID:       emote.ID,
 			Name:     emoteName,
-			Count:    emote.Count,
 			Added:    emote.Added,
-			LastUsed: emote.LastUsed,
+			Count:    len(emote.LastUsed),
+			LastUsed: lastUsed,
 			Score:    emote.Score,
 		})
 	}

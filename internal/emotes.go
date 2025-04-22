@@ -11,11 +11,11 @@ import (
 
 type Emote struct {
 	ID       string
-	Count    int
-	LastUsed *time.Time
+	LastUsed []*time.Time
 	Added    time.Time
 	Score    float64
 }
+
 type SevenTVEmote struct {
 	ID    string
 	Name  string

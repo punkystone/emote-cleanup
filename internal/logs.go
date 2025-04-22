@@ -100,8 +100,7 @@ func ScanLogFile(dataDirectory string, fileName string, emotesCount map[string]*
 		}
 		for _, word := range strings.Split(message, " ") {
 			if emote, ok := emotesCount[word]; ok {
-				emote.Count++
-				emote.LastUsed = &date
+				emote.LastUsed = append(emote.LastUsed, &date)
 			}
 		}
 	}
